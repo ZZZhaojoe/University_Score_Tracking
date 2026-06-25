@@ -5,12 +5,26 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.university_score_tracking.HelloController">
+
+<?import javafx.scene.control.TextField?>
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.university_score_tracking.HelloController"
+      alignment="CENTER"
+      spacing="10">
+
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+    <TextField fx:id="CourseField" promptText="Course Name"/>
+
+    <TextField fx:id="GradeField" promptText="Grade"/>
+
+    <TextField fx:id="UnitField" promptText="Unit"/>
+
+    <Button text="Add Course" onAction="#addCourse"/>
+
+    <Label fx:id="gpaLabel" text="Current GPA: 0.00"/>
+
 </VBox>
