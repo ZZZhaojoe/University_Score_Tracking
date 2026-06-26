@@ -21,7 +21,21 @@ public class HelloController {
 
     @FXML
     public void addCourse() {
-        System.out.println("Button clicked");
+        String courseName = CourseField.getText();
+
+        double grade = Double.parseDouble(GradeField.getText());
+
+        int unit = Integer.parseInt(UnitField.getText());
+
+        CourseStorage courseStorage = new CourseStorage(courseName,grade,unit);
+
+        gpaCalculator.addCourse(courseStorage);
+
+        Double gpa = gpaCalculator.calculateGPA();
+
+        gpaLabel.setText("Your New GPA: " + gpa);
+
+
     }
 
 }

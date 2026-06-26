@@ -7,9 +7,6 @@ public class GPA_Calculator {
 
     public GPA_Calculator() {
         courses = new ArrayList<>();
-
-        courses.add(new CourseStorage("CPSC 231", 2.7, 3));
-        courses.add(new CourseStorage("CPSC 233", 3.3, 3));
     }
 
 
@@ -28,5 +25,9 @@ public class GPA_Calculator {
         }
 
         return totalPoint/totalUnit;
+    }
+
+    public void addCourse(CourseStorage courseStorage) {
+        courses.add(courseStorage);
     }
 }
