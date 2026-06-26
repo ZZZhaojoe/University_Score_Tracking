@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Button?>
 
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ListView?>
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.university_score_tracking.HelloController"
@@ -24,6 +25,8 @@
     <TextField fx:id="UnitField" promptText="Unit"/>
 
     <Button text="Add Course" onAction="#addCourse"/>
+
+    <ListView fx:id="courseList" />
 
     <Label fx:id="gpaLabel" text="Current GPA: 0.00"/>
 
