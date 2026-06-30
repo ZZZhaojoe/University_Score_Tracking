@@ -26,6 +26,12 @@
 
     <Button text="Add Course" onAction="#addCourse"/>
 
+    <Button text="Remove Course" onAction="#removeCourse"/>
+
+    <Button text="Save Course" onAction="#saveCourse"/>
+
+    <Button text="Load Course" onAction="#loadCourse"/>
+
     <ListView fx:id="courseList" />
 
     <Label fx:id="gpaLabel" text="Current GPA: 0.00"/>

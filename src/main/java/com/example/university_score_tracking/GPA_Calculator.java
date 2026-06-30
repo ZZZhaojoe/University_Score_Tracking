@@ -9,7 +9,6 @@ public class GPA_Calculator {
         courses = new ArrayList<>();
     }
 
-
     public double calculateGPA() {
 
         double totalPoint = 0;
@@ -30,4 +29,19 @@ public class GPA_Calculator {
     public void addCourse(CourseStorage courseStorage) {
         courses.add(courseStorage);
     }
+
+    public void removeCourse(int i) {
+        if (i >= 0 && i < courses.size()) {
+            courses.remove(i);
+        }
+    }
+
+    public ArrayList<CourseStorage> returnCourses() {
+        return courses;
+    }
+
+    public void clearCourses() {
+        courses.clear();
+    }
+
 }
