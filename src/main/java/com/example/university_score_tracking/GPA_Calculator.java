@@ -15,8 +15,8 @@ public class GPA_Calculator {
         int totalUnit = 0;
 
         for (CourseStorage courseStorage: courses) {
-            totalPoint += courseStorage.returnGrade() * courseStorage.returnUnit();
-            totalUnit += courseStorage.returnUnit();
+            totalPoint += courseStorage.getGrade() * courseStorage.getUnit();
+            totalUnit += courseStorage.getUnit();
         }
 
         if (totalUnit == 0) {
@@ -30,10 +30,8 @@ public class GPA_Calculator {
         courses.add(courseStorage);
     }
 
-    public void removeCourse(int i) {
-        if (i >= 0 && i < courses.size()) {
-            courses.remove(i);
-        }
+    public void removeCourse(CourseStorage courseStorage) {
+            courses.remove(courseStorage);
     }
 
     public ArrayList<CourseStorage> returnCourses() {

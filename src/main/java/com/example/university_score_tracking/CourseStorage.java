@@ -1,29 +1,49 @@
 package com.example.university_score_tracking;
 
-import java.util.ArrayList;
 
 public class CourseStorage {
     private String courseName;
     private double grade;
     private int unit;
+    private String letterGrade;
 
-    public CourseStorage(String courseName, double grade, int unit) {
+    public CourseStorage(String courseName, String letterGrade, double grade, int unit) {
         this.courseName = courseName;
+        this.letterGrade = letterGrade;
         this.grade = grade;
         this.unit = unit;
     }
 
-    public String returnCourse() {
+    public String getCourseName() {
         return courseName;
     }
 
-    public double returnGrade() {
+    public double getGrade() {
         return grade;
     }
 
-    public int returnUnit() {
+    public String getLetterGrade() {
+        return letterGrade;
+    }
+
+    public int getUnit() {
         return unit;
     }
 
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public void setGrade(double grade) {
+        this.grade = grade;
+    }
+
+    public void setLetterGrade(String letterGrade) {
+        this.letterGrade = letterGrade;
+    }
+
+    public void setUnit(int unit) {
+        this.unit = unit;
+    }
 
 }
