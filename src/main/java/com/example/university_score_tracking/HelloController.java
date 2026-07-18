@@ -1,17 +1,15 @@
 package com.example.university_score_tracking;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.ProgressBar;
 
 public class HelloController {
     private final GPA_Calculator gpaCalculator = new GPA_Calculator();
     private final IO io = new IO();
+    private final DegreePlanner degreePlanner = new DegreePlanner();
 
     @FXML
     private TextField CourseField;
@@ -26,6 +24,9 @@ public class HelloController {
     private Label gpaLabel;
 
     @FXML
+    private ComboBox<String> semesterBox;
+
+    @FXML
     private TableView<CourseStorage> courseTable;
 
     @FXML
@@ -38,8 +39,42 @@ public class HelloController {
     private TableColumn<CourseStorage,Integer> UnitCol;
 
     @FXML
+    private TableColumn<CourseStorage, String> semesterCol;
+
+    @FXML
+    private TableView<DegreeRequirement> requirementTable;
+
+    @FXML
+    private TableColumn<DegreeRequirement,String> requiredCourseCol;
+
+    @FXML
+    private TableColumn<DegreeRequirement,Boolean> completedCourse;
+
+    @FXML
+    private ProgressBar progressBar;
+
+
+    public void updateProgressBar() {
+        int completed = degreePlanner.completedCourse();
+        int total = degreePlanner.getRequirements().size();
+
+        double progress =
+                (double) completed / total;
+
+        progressBar.setProgress(progress);
+
+        System.out.println("Complete " + completed + " total " + total + " progress " + progress);
+    }
+
+    @FXML
     public void addCourse() {
         String courseName = CourseField.getText();
+        String semester = semesterBox.getValue();
+
+        if (semester == null) {
+            gpaLabel.setText("Please choose a semester");
+            return;
+        }
 
         if (courseName.trim().isEmpty()) {
             gpaLabel.setText("Course name can not be empty");
@@ -47,14 +82,14 @@ public class HelloController {
         }
 
         try {
-            String lettergrade = GradeBox.getValue();
+            String letterGrade = GradeBox.getValue();
 
-            if (lettergrade == null) {
+            if (letterGrade == null) {
                 gpaLabel.setText("Please choose a grade");
                 return;
             }
 
-            double grade = convertLetterTOGPA(lettergrade);
+            double grade = convertLetterTOGPA(letterGrade);
 
             int unit = Integer.parseInt(UnitField.getText());
 
@@ -66,14 +101,32 @@ public class HelloController {
                 return;
             }
 
-            CourseStorage courseStorage = new CourseStorage(courseName,lettergrade,grade,unit);
+            CourseStorage courseStorage = new CourseStorage(courseName,letterGrade,grade,unit,semester);
             gpaCalculator.addCourse(courseStorage);
-            double gpa = gpaCalculator.calculateGPA();
-            gpaLabel.setText(String.format("Your New GPA: %.2f", gpa));
+            boolean requireCourse = degreePlanner.markCompleted(courseName.trim().toUpperCase());
+
+            requirementTable.refresh();
+            updateProgressBar();
+
+            if (requireCourse) {
+                gpaLabel.setText(String.format(
+                        "GPA: %.2f | Required course completed: %d" ,
+                        gpaCalculator.calculateGPA(),
+                        degreePlanner.completedCourse()
+                ));
+            }
+            else {
+                gpaLabel.setText(String.format(
+                        "Your New GPA: %.2f",
+                        gpaCalculator.calculateGPA()
+                ));
+            }
+
             courseTable.getItems().add(courseStorage);
             CourseField.clear();
             GradeBox.setValue(null);
             UnitField.clear();
+            semesterBox.setValue(null);
         } catch (NumberFormatException e) {
             gpaLabel.setText("Invalid input for unit");
         }
@@ -102,6 +155,8 @@ public class HelloController {
         GPA_Calculator storage = new GPA_Calculator();
         boolean success = io.loadFile(storage);
 
+        degreePlanner.resetRequirement();
+
         if (success) {
             courseTable.getItems().clear();
             gpaCalculator.clearCourses();
@@ -110,7 +165,12 @@ public class HelloController {
                 gpaCalculator.addCourse(courseStorage);
                 courseTable.getItems().add(courseStorage);
 
+                degreePlanner.markCompleted(
+                        courseStorage.getCourseName().trim().toUpperCase());
             }
+
+            requirementTable.refresh();
+            updateProgressBar();
 
             gpaLabel.setText(
                     String.format(
@@ -123,8 +183,6 @@ public class HelloController {
         else {
             gpaLabel.setText("Failed to load");
         }
-
-
     }
 
     @FXML
@@ -152,6 +210,9 @@ public class HelloController {
 
         UnitCol.setCellValueFactory(
                 new PropertyValueFactory<>("unit"));
+
+        semesterCol.setCellValueFactory(
+                new PropertyValueFactory<>("semester"));
 
         GradeBox.getItems().addAll(
                 "A+","A", "A-"
@@ -206,6 +267,58 @@ public class HelloController {
             gpaLabel.setText(
                     String.format("Your New GPA: %.2f",gpa));
         });
+
+        semesterCol.setCellFactory(
+                ComboBoxTableCell.forTableColumn(
+                        "Fall",
+                        "Winter",
+                        "Spring",
+                        "Summer")
+        );
+
+        semesterCol.setOnEditCommit(event -> {
+            CourseStorage courseStorage = event.getRowValue();
+            courseStorage.setSemester(event.getNewValue());
+        });
+
+        semesterBox.getItems().addAll(
+                "Fall",
+                "Winter",
+                "Spring",
+                "Summer"
+        );
+
+        requiredCourseCol.setCellValueFactory(
+                new PropertyValueFactory<>("courseCode")
+        );
+
+        completedCourse.setCellValueFactory(
+                new PropertyValueFactory<>("completed"));
+
+        completedCourse.setCellFactory(column -> new TableCell<>() {
+
+            @Override
+            protected void updateItem(Boolean completed, boolean empty) {
+                super.updateItem(completed,empty);
+                if (empty || completed == null) {
+                    setText(null);
+                    setStyle("");
+                }
+                else if (completed) {
+                    setText("✓");
+                    setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                }
+                else {
+                    setText("X");
+                    setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                }
+            }
+        });
+
+        requirementTable.getItems().addAll(
+                degreePlanner.getRequirements());
+
+        updateProgressBar();
     }
 
     private double convertLetterTOGPA(String letter) {

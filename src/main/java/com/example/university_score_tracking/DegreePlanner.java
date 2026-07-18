@@ -18,14 +18,19 @@ public class DegreePlanner {
     }
 
     public boolean markCompleted(String courseCode) {
-        boolean valid = false;
         for (DegreeRequirement degreeRequirement:requirements) {
             if (degreeRequirement.getCourseCode().equals(courseCode)) {
-                valid = true;
                 degreeRequirement.setCompleted(true);
+                return true;
             }
         }
-        return valid;
+        return false;
+    }
+
+    public void resetRequirement() {
+        for (DegreeRequirement degreeRequirement:requirements) {
+            degreeRequirement.setCompleted(false);
+        }
     }
 
     public int completedCourse() {
@@ -36,5 +41,9 @@ public class DegreePlanner {
             }
         }
         return count;
+    }
+
+    public ArrayList<DegreeRequirement> getRequirements() {
+        return requirements;
     }
 }

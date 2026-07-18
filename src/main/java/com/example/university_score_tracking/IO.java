@@ -21,11 +21,16 @@ public class IO {
                 String line = input.nextLine();
                 String[] data = line.split(",");
 
+                String semester = data.length >= 5
+                        ? data[4]
+                        : "Unassigned";
+
                 CourseStorage courseStorage = new CourseStorage(
                         data[0],
                         data[1],
                         Double.parseDouble(data[2]),
-                        Integer.parseInt(data[3])
+                        Integer.parseInt(data[3]),
+                        semester
                 );
                 gpaCalculator.addCourse(courseStorage);
             }
@@ -49,6 +54,8 @@ public class IO {
                 output.write(String.valueOf(courseStorage.getGrade()));
                 output.write(",");
                 output.write(String.valueOf(courseStorage.getUnit()));
+                output.write(",");
+                output.write(String.valueOf(courseStorage.getSemester()));
                 output.write("\n");
             }
             output.close();
