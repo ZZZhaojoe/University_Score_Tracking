@@ -10,6 +10,9 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ProgressBar?>
+
+
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.university_score_tracking.HelloController"
@@ -26,6 +29,8 @@
 
     <TextField fx:id="UnitField" promptText="Unit"/>
 
+    <ComboBox fx:id="semesterBox" promptText="Semester"/>
+
     <Button text="Add Course" onAction="#addCourse"/>
 
     <Button text="Remove Course" onAction="#removeCourse"/>
@@ -34,8 +39,24 @@
 
     <Button text="Load Course" onAction="#loadCourse"/>
 
+    <Label text="Degree Progress"/>
+
+    <ProgressBar
+            fx:id="progressBar"
+            progress="0.0"
+            minWidth="300"
+            prefWidth="300"
+            maxWidth="300"
+            minHeight="20"
+            prefHeight="20"
+            style="-fx-accent: #2e8b57;"/>
+
     <TableView fx:id="courseTable">
             <columns>
+                <TableColumn
+                        fx:id="semesterCol"
+                        text="Semester"/>
+
                 <TableColumn
                         fx:id="CourseCol"
                         text="Courses"/>
@@ -43,11 +64,24 @@
                 <TableColumn
                         fx:id="GradeCol"
                         text="Grade"/>
+
                 <TableColumn
                         fx:id="UnitCol"
                         text="Unit"/>
 
             </columns>
+    </TableView>
+
+    <TableView fx:id="requirementTable">
+        <columns>
+            <TableColumn
+                fx:id="requiredCourseCol"
+                text = "Required Course"/>
+
+            <TableColumn
+                    fx:id="completedCourse"
+                    text = "Course Completed"/>
+        </columns>
     </TableView>
 
     <Label fx:id="gpaLabel" text="Current GPA: 0.00"/>

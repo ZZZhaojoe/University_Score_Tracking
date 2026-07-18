@@ -6,12 +6,14 @@ public class CourseStorage {
     private double grade;
     private int unit;
     private String letterGrade;
+    private String semester;
 
-    public CourseStorage(String courseName, String letterGrade, double grade, int unit) {
+    public CourseStorage(String courseName, String letterGrade, double grade, int unit, String semester) {
         this.courseName = courseName;
         this.letterGrade = letterGrade;
         this.grade = grade;
         this.unit = unit;
+        this.semester = semester;
     }
 
     public String getCourseName() {
@@ -30,6 +32,10 @@ public class CourseStorage {
         return unit;
     }
 
+    public String getSemester() {
+        return semester;
+    }
+
     public void setCourseName(String courseName) {
         this.courseName = courseName;
     }
@@ -44,6 +50,10 @@ public class CourseStorage {
 
     public void setUnit(int unit) {
         this.unit = unit;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
     }
 
 }
