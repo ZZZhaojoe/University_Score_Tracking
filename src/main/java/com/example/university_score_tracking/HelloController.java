@@ -18,7 +18,7 @@ public class HelloController {
     private ComboBox<String> GradeBox;
 
     @FXML
-    private TextField UnitField;
+    private ComboBox<String> UnitField;
 
     @FXML
     private Label gpaLabel;
@@ -53,6 +53,18 @@ public class HelloController {
     @FXML
     private ProgressBar progressBar;
 
+    private void updateStatistics() {
+
+        gpaLabel.setText(String.format(
+                " GPA: %.2f | Courses: %d | Units: %d | Completed: %d / %d",
+
+                gpaCalculator.calculateGPA(),
+                gpaCalculator.returnCourses().size(),
+                gpaCalculator.calculateUnit(),
+                degreePlanner.completedCourse(),
+                degreePlanner.getRequirements().size()
+        ));
+    }
 
     public void updateProgressBar() {
         int completed = degreePlanner.completedCourse();
@@ -91,7 +103,7 @@ public class HelloController {
 
             double grade = convertLetterTOGPA(letterGrade);
 
-            int unit = Integer.parseInt(UnitField.getText());
+            int unit = Integer.parseInt(UnitField.getValue());
 
             if (unit <= 0) {
                 gpaLabel.setText("Units must be greater than 0.");
@@ -108,24 +120,20 @@ public class HelloController {
             requirementTable.refresh();
             updateProgressBar();
 
+            updateStatistics();
+
             if (requireCourse) {
-                gpaLabel.setText(String.format(
-                        "GPA: %.2f | Required course completed: %d" ,
-                        gpaCalculator.calculateGPA(),
-                        degreePlanner.completedCourse()
-                ));
-            }
-            else {
-                gpaLabel.setText(String.format(
-                        "Your New GPA: %.2f",
-                        gpaCalculator.calculateGPA()
-                ));
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText(null);
+                alert.setTitle("Congratulation");
+                alert.setContentText("Required course complete!");
+                alert.showAndWait();
             }
 
             courseTable.getItems().add(courseStorage);
             CourseField.clear();
             GradeBox.setValue(null);
-            UnitField.clear();
+            UnitField.setValue(null);
             semesterBox.setValue(null);
         } catch (NumberFormatException e) {
             gpaLabel.setText("Invalid input for unit");
@@ -145,8 +153,7 @@ public class HelloController {
         courseTable.getItems().remove(selectedCourse);
         gpaCalculator.removeCourse(selectedCourse);
 
-        double gpa = gpaCalculator.calculateGPA();
-        gpaLabel.setText(String.format("Your New GPA: %.2f",gpa));
+        updateStatistics();
     }
 
     @FXML
@@ -172,13 +179,7 @@ public class HelloController {
             requirementTable.refresh();
             updateProgressBar();
 
-            gpaLabel.setText(
-                    String.format(
-                            "Loaded %d courses | GPA: %.2f",
-                            gpaCalculator.returnCourses().size(),
-                            gpaCalculator.calculateGPA()
-                    )
-            );
+            updateStatistics();
         }
         else {
             gpaLabel.setText("Failed to load");
@@ -221,6 +222,9 @@ public class HelloController {
                 ,"D+","D","D-"
                 ,"F");
 
+        UnitField.getItems().addAll(
+                "1","2","3","4","5");
+
         courseTable.setEditable(true);
 
         GradeCol.setCellFactory(
@@ -242,9 +246,7 @@ public class HelloController {
             double newGrade = convertLetterTOGPA(newLetterGrade);
             course.setGrade(newGrade);
 
-            double gpa = gpaCalculator.calculateGPA();
-
-            gpaLabel.setText(String.format("Your New GPA: %.2f",gpa));
+            updateStatistics();
         });
 
         UnitCol.setCellFactory(
@@ -264,8 +266,7 @@ public class HelloController {
 
             double gpa = gpaCalculator.calculateGPA();
 
-            gpaLabel.setText(
-                    String.format("Your New GPA: %.2f",gpa));
+            updateStatistics();
         });
 
         semesterCol.setCellFactory(

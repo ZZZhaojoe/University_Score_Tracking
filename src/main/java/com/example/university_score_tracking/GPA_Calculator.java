@@ -26,6 +26,15 @@ public class GPA_Calculator {
         return totalPoint/totalUnit;
     }
 
+    public int calculateUnit() {
+        int totalUnit = 0;
+
+        for (CourseStorage courseStorage:courses) {
+            totalUnit += courseStorage.getUnit();
+        }
+        return totalUnit;
+    }
+
     public void addCourse(CourseStorage courseStorage) {
         courses.add(courseStorage);
     }

@@ -27,17 +27,17 @@
 
     <ComboBox fx:id="GradeBox" promptText="Grade"/>
 
-    <TextField fx:id="UnitField" promptText="Unit"/>
+    <ComboBox fx:id="UnitField" promptText="Unit"/>
 
     <ComboBox fx:id="semesterBox" promptText="Semester"/>
 
-    <Button text="Add Course" onAction="#addCourse"/>
+    <Button text="Add" onAction="#addCourse"/>
 
-    <Button text="Remove Course" onAction="#removeCourse"/>
+    <Button text="Remove" onAction="#removeCourse"/>
 
-    <Button text="Save Course" onAction="#saveCourse"/>
+    <Button text="Save" onAction="#saveCourse"/>
 
-    <Button text="Load Course" onAction="#loadCourse"/>
+    <Button text="Load" onAction="#loadCourse"/>
 
     <Label text="Degree Progress"/>
 
@@ -59,7 +59,7 @@
 
                 <TableColumn
                         fx:id="CourseCol"
-                        text="Courses"/>
+                        text="Course"/>
 
                 <TableColumn
                         fx:id="GradeCol"
@@ -67,7 +67,7 @@
 
                 <TableColumn
                         fx:id="UnitCol"
-                        text="Unit"/>
+                        text="Units"/>
 
             </columns>
     </TableView>
@@ -76,11 +76,11 @@
         <columns>
             <TableColumn
                 fx:id="requiredCourseCol"
-                text = "Required Course"/>
+                text = "Requirement"/>
 
             <TableColumn
                     fx:id="completedCourse"
-                    text = "Course Completed"/>
+                    text = "Status"/>
         </columns>
     </TableView>
 
