@@ -1,0 +1,88 @@
+.root-container {
+    -fx-background-color: #f4f6f8;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
+}
+
+.main-title {
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+}
+
+.section-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #263238;
+}
+
+.section-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #d7dce2;
+    -fx-padding: 15px;
+}
+
+.text-field,
+.combo-box {
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-color: #c8ced6;
+    -fx-background-color: white;
+    -fx-padding: 6px;
+}
+
+.button {
+    -fx-background-color: #e2e8f0;
+    -fx-text-fill: #1f2937;
+    -fx-font-weight: bold;
+    -fx-background-radius: 7px;
+    -fx-padding: 8px 18px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #cbd5e1;
+}
+
+.primary-button {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+}
+
+.primary-button:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.progress-bar {
+    -fx-accent: #16a34a;
+}
+
+.progress-text {
+    -fx-font-weight: bold;
+    -fx-text-fill: #374151;
+}
+
+.stat-value {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2563eb;
+}
+
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #d7dce2;
+    -fx-border-radius: 7px;
+}
+
+.table-view .column-header {
+    -fx-background-color: #e8edf3;
+    -fx-font-weight: bold;
+}
+
+.status-label {
+    -fx-text-fill: #475569;
+    -fx-font-style: italic;
+}
+

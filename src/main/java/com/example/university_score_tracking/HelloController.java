@@ -18,7 +18,7 @@ public class HelloController {
     private ComboBox<String> GradeBox;
 
     @FXML
-    private ComboBox<String> UnitField;
+    private ComboBox<Integer> UnitBox;
 
     @FXML
     private Label gpaLabel;
@@ -51,31 +51,81 @@ public class HelloController {
     private TableColumn<DegreeRequirement,Boolean> completedCourse;
 
     @FXML
+    private Label progressTextLabel;
+
+    @FXML
+    private Label gpaValueLabel;
+
+    @FXML
+    private Label courseCountLabel;
+
+    @FXML
+    private Label unitCountLabel;
+
+    @FXML
+    private Label completedCountLabel;
+
+    @FXML
     private ProgressBar progressBar;
 
     private void updateStatistics() {
 
-        gpaLabel.setText(String.format(
-                " GPA: %.2f | Courses: %d | Units: %d | Completed: %d / %d",
+        gpaValueLabel.setText(
+                String.format("%.2f", gpaCalculator.calculateGPA())
+        );
 
-                gpaCalculator.calculateGPA(),
-                gpaCalculator.returnCourses().size(),
-                gpaCalculator.calculateUnit(),
-                degreePlanner.completedCourse(),
-                degreePlanner.getRequirements().size()
-        ));
+        courseCountLabel.setText(
+                String.valueOf(gpaCalculator.returnCourses().size())
+        );
+
+        unitCountLabel.setText(
+                String.valueOf(gpaCalculator.calculateUnit())
+        );
+
+        completedCountLabel.setText(
+                degreePlanner.completedCourse()
+                        + " / "
+                        + degreePlanner.getRequirements().size()
+        );
     }
 
     public void updateProgressBar() {
         int completed = degreePlanner.completedCourse();
         int total = degreePlanner.getRequirements().size();
 
-        double progress =
-                (double) completed / total;
+        double progress;
+
+        if (total == 0) {
+            return;
+        }
+        else {
+            progress = (double) completed / total;
+        }
 
         progressBar.setProgress(progress);
 
-        System.out.println("Complete " + completed + " total " + total + " progress " + progress);
+        int percentage = (int) Math.round(progress * 100);
+
+        progressTextLabel.setText(
+                percentage + "% Complete — "
+                        + completed + " of "
+                        + total + " required courses"
+        );
+    }
+
+    private void refreshDegreeRequirements() {
+
+        degreePlanner.resetRequirement();
+
+        for (CourseStorage course : gpaCalculator.returnCourses()) {
+            degreePlanner.markCompleted(
+                    course.getCourseName().trim().toUpperCase()
+            );
+        }
+
+        requirementTable.refresh();
+        updateProgressBar();
+        updateStatistics();
     }
 
     @FXML
@@ -93,51 +143,44 @@ public class HelloController {
             return;
         }
 
-        try {
-            String letterGrade = GradeBox.getValue();
+        String letterGrade = GradeBox.getValue();
 
-            if (letterGrade == null) {
-                gpaLabel.setText("Please choose a grade");
-                return;
-            }
-
-            double grade = convertLetterTOGPA(letterGrade);
-
-            int unit = Integer.parseInt(UnitField.getValue());
-
-            if (unit <= 0) {
-                gpaLabel.setText("Units must be greater than 0.");
-                return;
-            } else if (unit > 5) {
-                gpaLabel.setText("Unit can not be larger than 5");
-                return;
-            }
-
-            CourseStorage courseStorage = new CourseStorage(courseName,letterGrade,grade,unit,semester);
-            gpaCalculator.addCourse(courseStorage);
-            boolean requireCourse = degreePlanner.markCompleted(courseName.trim().toUpperCase());
-
-            requirementTable.refresh();
-            updateProgressBar();
-
-            updateStatistics();
-
-            if (requireCourse) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText(null);
-                alert.setTitle("Congratulation");
-                alert.setContentText("Required course complete!");
-                alert.showAndWait();
-            }
-
-            courseTable.getItems().add(courseStorage);
-            CourseField.clear();
-            GradeBox.setValue(null);
-            UnitField.setValue(null);
-            semesterBox.setValue(null);
-        } catch (NumberFormatException e) {
-            gpaLabel.setText("Invalid input for unit");
+        if (letterGrade == null) {
+            gpaLabel.setText("Please choose a grade");
+               return;
         }
+
+        double grade = convertLetterTOGPA(letterGrade);
+
+        Integer unit = UnitBox.getValue();
+
+        if (unit == null) {
+            gpaLabel.setText("Please choose the number of units");
+            return;
+        }
+
+        CourseStorage courseStorage = new CourseStorage(courseName,letterGrade,grade,unit,semester);
+        gpaCalculator.addCourse(courseStorage);
+        courseTable.getItems().add(courseStorage);
+        boolean requireCourse = degreePlanner.markCompleted(courseName.trim().toUpperCase());
+
+        requirementTable.refresh();
+        updateProgressBar();
+
+        updateStatistics();
+
+        if (requireCourse) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setTitle("Congratulation");
+            alert.setContentText("Required course complete!");
+            alert.showAndWait();
+        }
+
+        CourseField.clear();
+        GradeBox.setValue(null);
+        UnitBox.setValue(null);
+        semesterBox.setValue(null);
 
     }
 
@@ -153,7 +196,10 @@ public class HelloController {
         courseTable.getItems().remove(selectedCourse);
         gpaCalculator.removeCourse(selectedCourse);
 
-        updateStatistics();
+        refreshDegreeRequirements();
+        gpaLabel.setText(
+                selectedCourse.getCourseName() + " removed"
+        );
     }
 
     @FXML
@@ -222,8 +268,8 @@ public class HelloController {
                 ,"D+","D","D-"
                 ,"F");
 
-        UnitField.getItems().addAll(
-                "1","2","3","4","5");
+        UnitBox.getItems().addAll(
+                1,2,3,4,5);
 
         courseTable.setEditable(true);
 
@@ -263,8 +309,6 @@ public class HelloController {
             int newUnit = event.getNewValue();
 
             unit.setUnit(newUnit);
-
-            double gpa = gpaCalculator.calculateGPA();
 
             updateStatistics();
         });
@@ -320,6 +364,7 @@ public class HelloController {
                 degreePlanner.getRequirements());
 
         updateProgressBar();
+        updateStatistics();
     }
 
     private double convertLetterTOGPA(String letter) {
